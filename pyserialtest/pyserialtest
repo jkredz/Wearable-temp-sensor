@@ -1,0 +1,21 @@
+import serial
+import time
+import binascii
+
+ser = serial.Serial('COM3', 9600, timeout=0)
+data_log=[]
+
+file = open('C:/Users/justin/Documents/GitHub/AccelerometerPrototype/testdatalog.csv','w')
+file.write('\n')
+while 1:
+ try:
+
+  val=ser.readline()
+  data_log.append(val)
+  #b= str(binascii.b2a_uu(ser.readline()))
+  print >> file ,',',val
+  file.close()
+  time.sleep(1)   #seconds for code to be delayed
+ except ser.SerialTimeoutException:
+  print('Data could not be read')
+  time.sleep(1)  #seconds for code to be delayed

@@ -1,0 +1,32 @@
+import serial
+import time
+from datetime import datetime
+from datetime import timedelta
+
+baudRate = 9600
+
+def main():
+    port = 'COM3'
+    ser = serial.Serial(port, baudRate, timeout=None)
+    fileName = 'acclog-' + str(datetime.now().strftime('%Y%m%d-%H%M%S')) +'.csv'
+    logCSV = open(fileName, 'a+')
+    startTime = datetime.now()
+    fileDuration = timedelta(days=1)
+
+    while True:
+        dataRow = datetime.now().strftime('%Y-%m-%d %H:%M:%S')+','+ser.readline() #dataRow is time with serial read as a string
+        logCSV.write(dataRow) #write dataRow to csv file
+        print dataRow         #print dataRow onto python console
+
+
+        # if the process takes longer than fileduration, make a new file.
+        if(datetime.now() - startTime > fileDuration):
+            logCSV.close()
+            fileName = 'acclog-' + str(datetime.now().strftime('%Y%m%d-%H%M%S')) +'.csv'
+            logCSV = open(fileName, 'a+')
+            startTime = datetime.now()
+
+    logCSV.close()   #in command line type Control+C to stop logging
+
+if __name__ == '__main__':
+    main()
